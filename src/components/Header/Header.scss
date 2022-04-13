@@ -1,0 +1,177 @@
+.header {
+  height: 80px;
+  margin: 0;
+  padding: 0 70px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background-color: white;
+
+  &__navigation {
+    display: inline-block;
+    height: 100%;
+    margin: 0;
+    padding: 0 20px;
+    list-style-type: none;
+    display: grid;
+    grid-auto-flow: column;
+    justify-content: start;
+
+    &_item {
+      padding: 0 16px;
+      text-align: center;
+      line-height: 80px;
+
+      &--link {
+        position: relative;
+        display: inline-block;
+        height: 100%;
+        text-decoration: none;
+        color: black;
+        transition: color 0.3s ease-in-out;
+
+        &:hover {
+          color: #5ece7b;
+          transition: color 0.3s ease-in-out;
+        }
+      }
+    }
+  }
+
+  &__logo {
+    position: absolute;
+    left: 50%;
+    height: 32px;
+    width: 28px;
+    background-color: #5ece7b;
+    color: white;
+    font-weight: 300;
+    font-size: 30px;
+    line-height: 32px;
+    text-align: center;
+    outline: 10px transparent double;;
+    transition: outline 0.5s ease-in-out;
+
+    &:hover {
+      outline: 10px #5ece7b double;
+      transition: outline 0.5s ease-in-out;
+    }
+
+    &:active {
+      outline: 20px #5ece7b double;
+      transition: outline 0.5s ease-in-out;
+    }
+  }
+
+  .active {
+    color: #5ece7b;
+    
+    &::after {
+      content: "";
+      position: absolute;
+      top: 80px;
+      left: -16px;
+      border: 1px solid #5ece7b;
+      background-color: #5ece7b;
+      width: calc(100% + 32px);
+    }
+  }
+
+  &__control {
+    height: 100%;
+    padding: 0 20px;
+    display: grid;
+    grid-auto-flow: column;
+    justify-content: end;
+    align-items: center;
+
+    &_currencies {
+      position: relative;
+      padding: 10px;
+      cursor: pointer;
+
+      .currency_picker {
+        font-size: 18px;
+        &:hover{
+          color: #5ece7b;
+        }
+      }
+
+      .currency_list {
+        position: absolute;
+        z-index: 500;
+        top: 50px;
+        box-shadow: 0 0 3px 3px rgba(128, 128, 128, 0.116);
+        background-color: white;
+        margin: 0;
+        padding: 0;
+
+        &--item {
+          width: max-content;
+          padding: 10px;
+
+          &:hover{
+            color: #5ece7b;
+          }
+        }
+      }
+    }
+
+    &_cart {
+      padding-left: 10px;
+      position: relative;
+
+      .product-count {
+        position: absolute;
+        z-index: 5;
+        top: -10px;
+        left: 20px;
+        width: 15px;
+        height: 15px;
+        line-height: 15px;
+        font-size: 12px;
+        text-align: center;
+        border: 1px solid transparent;
+        border-radius: 50%;
+        color: white;
+        background-color: black;
+      }
+
+      .minicart {
+        position: relative;
+        border: none;
+        background-color: white;
+        width: 20px;
+        height: 20px;
+        background-color: white;
+        box-shadow: 1px 1px 6px 6px white;
+        outline: 8px double transparent;
+        transition: background-color 0.5s ease-in-out,
+          box-shadow 0.5s ease-in-out,
+          outline 0.5s ease-in-out;
+    
+        &__cart {
+          height: 100%;
+          cursor: pointer;
+
+          &:hover {
+            background-color: #5ece7ca2;
+            box-shadow: 1px 1px 6px 6px #5ece7ca2;
+            outline: 8px double transparent;
+            transition: background-color 0.5s ease-in-out,
+              box-shadow 0.5s ease-in-out;
+          }
+  
+          &:active {
+            outline: 8px double #5ece7b;
+            transition: outline 0.3s ease-in-out;
+          }
+        }
+      }
+    }
+  }
+}

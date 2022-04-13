@@ -1,0 +1,194 @@
+.minicart__products {
+  position: absolute;
+  padding: 10px 15px 20px 15px;
+  z-index: 100;
+  top: 50px;
+  left: -245px;
+  width: 325px;
+  height: 60vh;
+  display: grid;
+  grid-auto-flow: row;
+  grid-template-rows: auto 1fr auto auto;
+  row-gap: 20px;
+  grid-template-columns: 295px;
+  justify-content: center;
+  align-items: start;
+  background-color: white;
+  overflow: overlay;
+
+  .bag-contents {
+    font-size: 16px;
+    line-height: 25px;
+    font-weight: bold;
+
+    .items-count {
+      font-weight: normal;
+    }
+  }
+
+  &--empty {
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+  }
+
+  &_contents {
+    display: grid;
+    grid-auto-flow: row;
+    row-gap: 20px;
+
+    .contents--item {
+      display: grid;
+      grid-auto-flow: column;
+      column-gap: 5px;
+      grid-template-columns: 1fr auto auto;
+      height: max-content;
+
+      .item_info {
+        display: flex;
+        flex-direction: column;
+
+        &--brand, &--name {
+          font-size: 16px;
+          line-height: 25px;
+        }
+
+        &--price {
+          font-size: 16px;
+          line-height: 25px;
+          font-weight: bold;
+          padding: 5px 0 26px;
+        }
+
+        &--attributes {
+          display: grid;
+          grid-auto-flow: column;
+          justify-content: start;
+          column-gap: 8px;
+
+          &-swatch {
+            height: 25px;
+            width: 50px;
+            border: 1px solid black;
+          }
+
+          &-text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 25px;
+            width: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            border: 1px solid white;
+            color: white;
+            background-color: black;
+          }
+        }
+      }
+
+      .item_quantity {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+
+        &--add, &--subtract {
+          width: 24px;
+          height: 24px;
+          background-color: white;
+          border: 1px solid black;
+          color: black;
+          outline: 3px double transparent;
+          cursor: pointer;
+          transition: background-color 0.5s ease-in-out,
+            color 0.5s ease-in-out,
+            outline 0.5s ease-in-out;
+
+            &:hover {
+              color: white;
+              border: 1px solid white;
+              background-color: black;
+            }
+
+            &:active {
+              outline: 3px double black;
+            }
+        }
+      }
+
+      .item_gallery {
+        width: 105px;
+        height: 130px;
+
+        &--pic {
+          width: 100%;
+          height: 100%;
+          object-fit: scale-down;
+        }
+      }
+    }
+  }
+
+  .bag-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 25px;
+  }
+}
+
+.minicart__buttons {
+  display: flex;
+  justify-content: space-between;
+
+  .button {
+    width: 140px;
+    height: 45px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 17px;
+    outline: 3px double transparent;
+    cursor: pointer;
+
+    &__view-bag {
+      border: 1px solid black;
+      background-color: white;
+      transition: background-color 0.5s ease-in-out,
+        color 0.5s ease-in-out,
+        outline 0.5s ease-in-out;
+
+      &:hover {
+        color: white;
+        background-color: black;
+      }
+
+      &:active {
+        outline: 3px double black;
+      }
+    }
+
+    &__checkout {
+      border: 1px solid #5ece7b;
+      color: white;
+      background-color: #5ece7b;
+      transition: background-color 0.5s ease-in-out,
+        color 0.5s ease-in-out,
+        outline 0.5s ease-in-out;
+
+      &:hover {
+        color: #5ece7b;
+        background-color: white;
+      }
+
+      &:active {
+        outline: 3px double #5ece7b;
+      }
+    }
+  }
+}

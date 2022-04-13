@@ -1,0 +1,208 @@
+.cart {
+  box-sizing: border-box;
+  display: grid;
+  grid-auto-flow: row;
+  grid-template-rows: auto 1fr auto;
+  row-gap: 60px;
+  padding: 0 100px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 150px;
+
+    h3 {
+      font-size: 32px;
+      line-height: 40px;
+      font-weight: bold;
+    }
+
+    &_clear {
+      width: 100px;
+      height: 40px;
+      border: 1px solid #5ece7b;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 30px;
+      line-height: 30px;
+      font-weight: 300;
+      background-color: #5ece7b;
+      cursor: pointer;
+      transition: background-color 0.5s ease-in-out,
+        color 0.5s ease-in-out,
+        outline 0.5s ease-in-out;
+
+      &:hover {
+        color: #5ece7b;
+        background-color: white;
+      }
+
+      &:active {
+        outline: 3px double #5ece7b;
+      }
+    }
+  }
+
+  &__products {
+    padding-right: 120px;
+
+    &_product {
+      display: grid;
+      grid-auto-flow: column;
+      grid-template-columns: 1fr auto auto;
+      column-gap: 20px;
+      padding: 20px 0;
+      border-top: 2px solid rgba(128, 128, 128, 0.493);
+
+      &:last-child {
+        border-bottom: 2px solid rgba(128, 128, 128, 0.493);
+      }
+
+      .product__data {
+        display: grid;
+
+        &_brand, &_name {
+          font-size: 30px;
+          line-height: 27px;
+          padding-bottom: 18px;
+        }
+
+        &_brand {
+          font-weight: 600;
+        }
+
+        &_name {
+          font-weight: 400;
+        }
+
+        &_price {
+          font-size: 24px;
+          line-height: 18px;
+          font-weight: bold;
+          padding: 12px 0 22px;
+        }
+
+        &_attributes {
+          display: grid;
+          grid-auto-flow: column;
+          justify-content: start;
+          column-gap: 12px;
+
+          &--swatch {
+            height: 45px;
+            width: 63px;
+            border: 1px solid black;
+          }
+
+          &--text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 45px;
+            width: 63px;
+            border: 1px solid black;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 18px;
+            color: white;
+            background-color: black;
+          }
+        }
+
+        &_itemQuantity {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          align-items: center;
+
+          &--add, &--subtract {
+            width: 45px;
+            height: 45px;
+            background-color: white;
+            border: 1px solid black;
+            color: black;
+            font-size: 22px;
+            outline: 3px double transparent;
+            cursor: pointer;
+            transition: background-color 0.5s ease-in-out,
+              color 0.5s ease-in-out,
+              outline 0.5s ease-in-out;
+  
+              &:hover {
+                color: white;
+                border: 1px solid white;
+                background-color: black;
+              }
+  
+              &:active {
+                outline: 3px double black;
+              }
+          }
+
+          &--total {
+            font-size: 24px;
+            font-weight: 600;
+          }
+        }
+
+        &_gallery {
+          position: relative;
+          width: 160px;
+          height: 180px;
+
+          .button {
+            position: absolute;
+            height: 30px;
+            width: 30px;
+            font-size: 20px;
+            border: none;
+            background-color: transparent;
+            font-weight: bold;
+            outline: 3px double transparent;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out,
+              outline 0.3s ease-in-out;
+
+            &:hover {
+              background: rgba(0, 0, 0, 0.349);
+            }
+
+            &:active {
+              outline: 3px double black;
+            }
+
+            &--forward {
+              top: 50%;
+              right: 0;
+            }
+
+            &--back {
+              top: 50%;
+            }
+          }
+
+          &--pic {
+            width: 160px;
+            height: 180px;
+            
+            .image {
+              width: 100%;
+              height: 100%;
+              object-fit: scale-down;
+            }
+          }
+        }
+      }
+    }
+
+    &_total {
+      padding-right: 150px;
+      display: flex;
+      justify-content: space-between;
+
+      p {
+        font-size: 40px;
+        font-weight: 600;
+      }
+    }
+  }
+}

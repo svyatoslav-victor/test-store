@@ -1,0 +1,40 @@
+.home {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-color: #5ece7b;
+  box-shadow: -10px -10px 10px 20px #5ece7b;
+  animation: fadeIn 1s forwards;
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  &__content {
+    width: 100%;
+    border-bottom: 1px dotted black;
+
+    &_header {
+      width: 50%;
+      margin: 0 auto -2px;
+      text-align: center;
+      padding: 50px;
+      font-size: 50px;
+      font-weight: 300;
+      border: 1px dotted black;
+      border-bottom: 2px solid #5ece7b;
+      color: black;
+      animation: text 1.5s ease-in-out alternate infinite;
+    }
+
+    @keyframes text {
+      100% {
+        color: #5ece7b;
+      }
+    }
+  }
+}

@@ -1,0 +1,103 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow: overlay;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+#root {
+  animation: fadeIn 1s forwards;
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+}
+
+.wrapper {
+  display: grid;
+  justify-items: center;
+}
+
+.overlay-hidden {
+  visibility: hidden;
+  height: calc(100vh - 80px);
+  width: 100vw;
+  position: absolute;
+  top: 80px;
+  z-index: 1;
+  opacity: 0;
+  overflow: hidden;
+  background-color: rgba(43, 42, 42, 0.486);
+}
+
+.overlay-visible {
+  visibility: visible;
+  height: 200vh;
+  width: 100vw;
+  position: absolute;
+  top: 80px;
+  z-index: 1;
+  opacity: 0.99;
+  overflow: hidden;
+  background-color: rgba(43, 42, 42, 0.486);
+}
+
+.content {
+  min-width: 1024px;
+  max-width: 1440px;
+  min-height: 100vh;
+  display: grid;
+  grid-auto-flow: row;
+  grid-template-columns: minmax(1024px, 1440px);
+  grid-template-rows: auto 1fr auto;
+  row-gap: 80px;
+}
+
+.scrollToTop {
+  position: fixed;
+  top: 85vh;
+
+  &__button {
+    margin-left: 35px;
+    width: 50px;
+    height: 50px;
+    font-size: 48px;
+    line-height: 48px;
+    border: none;
+    border-radius: 20%;
+    color: rgba(0, 0, 0, 0.678);
+    box-shadow: 0 -0 10px 10px #5ece7ca2;
+    background-color: #5ece7ca2;
+    cursor: pointer;
+    opacity: 0.1;
+    transition: opacity 1s ease-in-out,
+      background-color 1s ease-in-out,
+      box-shadow 1s ease-in-out;
+
+    &:active {
+      box-shadow: 0 -0 10px 10px #5ece7b;
+      background-color: #5ece7b;
+      color: black;
+      transition: opacity 1s ease-in-out,
+        background-color 1s ease-in-out,
+        box-shadow 0.5s ease-in-out;
+    }
+  }
+}
+
+.footer {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
