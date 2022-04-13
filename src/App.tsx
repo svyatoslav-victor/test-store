@@ -12,14 +12,14 @@ import classNames from 'classnames';
 import './App.scss';
 
 type State = {
-  currency: string | null,
+  currency: string,
   showCurrencies: boolean,
   showMiniCart: boolean,
   id: string,
   isVisible: boolean,
   productCount: number,
   cart: any[],
-};;
+};
 
 export default class App extends React.Component<{}, State> {
   state = {
@@ -38,7 +38,7 @@ export default class App extends React.Component<{}, State> {
     this.setState({
       cart: JSON.parse(localStorage.cart || "[]"),
       productCount: +localStorage.productCount || 0,
-      currency: localStorage.getItem('currency'),
+      currency: localStorage.currency,
       showCurrencies: false,
     });
 
@@ -96,7 +96,7 @@ export default class App extends React.Component<{}, State> {
   setCurrency = (event: React.MouseEvent<HTMLElement>) => {
     localStorage.setItem('currency', event.currentTarget.id);
     this.setState({
-      currency: localStorage.getItem('currency'),
+      currency: localStorage.currency,
       showCurrencies: false,
     });
   };
