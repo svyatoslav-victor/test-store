@@ -38,7 +38,7 @@ export default class App extends React.Component<{}, State> {
     this.setState({
       cart: JSON.parse(localStorage.cart || "[]"),
       productCount: +localStorage.productCount || 0,
-      currency: localStorage.currency,
+      currency: localStorage.currency || "$",
       showCurrencies: false,
     });
 
@@ -94,7 +94,7 @@ export default class App extends React.Component<{}, State> {
   };
 
   setCurrency = (event: React.MouseEvent<HTMLElement>) => {
-    localStorage.setItem('currency', event.currentTarget.id);
+    localStorage.setItem('currency', event.currentTarget.id || '$');
     this.setState({
       currency: localStorage.currency,
       showCurrencies: false,
