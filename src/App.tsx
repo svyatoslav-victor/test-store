@@ -19,7 +19,7 @@ type State = {
   isVisible: boolean,
   productCount: number,
   cart: any[],
-};
+};;
 
 export default class App extends React.Component<{}, State> {
   state = {
