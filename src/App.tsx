@@ -2,9 +2,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Home from './components/Home/Home';
 import Header from './components/Header/Header';
-import All from './components/All/All';
-import Clothes from './components/Clothes/Clothes';
-import Tech from './components/Tech/Tech';
+import Goods from './components/Goods/Goods';
 import Product from './components/Product/Product';
 import Cart from './components/Cart/Cart';
 import classNames from 'classnames';
@@ -15,17 +13,19 @@ type State = {
   currency: string,
   showCurrencies: boolean,
   showMiniCart: boolean,
+  categoryName: string,
   id: string,
   isVisible: boolean,
   productCount: number,
-  cart: any[],
+  cart: Record<string, unknown>[],
 };
 
-export default class App extends React.Component<{}, State> {
+export default class App extends React.Component<Record<string, unknown>, State> {
   state = {
     currency: '$',
     showCurrencies: false,
     showMiniCart: false,
+    categoryName: '',
     id: '',
     isVisible: false,
     productCount: 0,
@@ -44,15 +44,15 @@ export default class App extends React.Component<{}, State> {
 
     window.addEventListener('scroll', this.trackScroll);
     window.addEventListener('popstate', this.close);
-  };
+  }
 
   componentWillUnmount() {
     window.removeEventListener('scroll', this.trackScroll);
   }
 
   trackScroll = () => {
-    let element = document.documentElement;
-    let totalScroll = element.scrollHeight - element.clientHeight;
+    const element = document.documentElement;
+    const totalScroll = element.scrollHeight - element.clientHeight;
 
     if ((element.scrollTop / totalScroll) > 0.80) {
       this.setState({
@@ -71,6 +71,12 @@ export default class App extends React.Component<{}, State> {
     });
   };
 
+  setCategory = (event: React.MouseEvent<HTMLElement>) => {
+    this.setState({
+      categoryName: event.currentTarget.id,
+    });
+  };
+
   close = () => {
     if (this.state.showCurrencies) {
       this.setState({
@@ -83,7 +89,9 @@ export default class App extends React.Component<{}, State> {
         showMiniCart: false,
       });
 
-      this.body!.style.overflow = 'overlay';
+      if (this.body) {
+        this.body.style.overflow = 'overlay';
+      }
     }
   };
 
@@ -106,30 +114,86 @@ export default class App extends React.Component<{}, State> {
       showMiniCart: !prevState.showMiniCart,
     }));
 
-    if (this.state.showMiniCart) {
-      this.body!.style.overflow = 'overlay';
-    } else {
-      this.body!.style.overflow = 'hidden';
+    if (this.state.showMiniCart && this.body) {
+      this.body.style.overflow = 'overlay';
+    } else if (this.body) {
+      this.body.style.overflow = 'hidden';
     }
   };
 
-  fillCart = (data: {}) => {
-    this.setState({
-      cart: [...this.state.cart, data],
-    });
-
-    this.setState({
-      productCount: this.state.cart.length,
-    });
+  fillCart = (data: Record<string, unknown>) => {
+    if (this.state.cart.length === 0) {
+      this.setState({
+        cart: [...this.state.cart, data],
+      });
+  
+      this.setState({
+        productCount: 1,
+      });
+    } else {
+      this.state.cart.forEach((product: Record<string, string>) => {
+        if (this.state.cart.find((product: Record<string, string>) => product.id === data.id)) {
+          if (product.id === data.id) {
+            Object.assign(product, { itemCount: product.itemCount + 1 });
+            this.setState({
+              productCount: this.state.productCount + 1,
+            });
+          }
+          return;
+        } else {
+          this.setState({
+            cart: [...this.state.cart, data],
+          });
+      
+          this.setState(prevState => ({
+            productCount: prevState.productCount + 1,
+          }));
+        }
+      })
+    }
 
     localStorage.setItem('cart', JSON.stringify(this.state.cart));
     localStorage.setItem('productCount', this.state.productCount.toString());
   };
 
-  addItem = (id: number) => {
+  addItem = (id: string) => {
     const cartCopy = [...this.state.cart].map(
-      (product: any) => (product.id === id
+      (product: Record<string, string>) => (product.id === id
         ? Object.assign(product, { itemCount: product.itemCount + 1 })
+        : product
+      )
+    );
+
+    this.setState(prevState => ({
+      productCount: prevState.productCount + 1,
+    }));
+
+    this.setState({
+      cart: cartCopy,
+    });
+  };
+
+  removeItem = (id: string) => {
+    const cartCopy = [...this.state.cart].map(
+      (product: Record<string, string>) => (product.id === id
+        ? Object.assign(product, { itemCount: +product.itemCount - 1 })
+        : product
+      )
+    );
+
+    this.setState(prevState => ({
+      productCount: prevState.productCount - 1,
+    }));
+
+    this.setState({
+      cart: cartCopy.filter((product: Record<string, number | string>) => product.itemCount > 0),
+    });
+  };
+
+  prevImage = (id: string) => {
+    const cartCopy = [...this.state.cart].map(
+      (product: Record<string, string>) => (product.id === id
+        ? Object.assign(product, { imageIndex: +product.imageIndex - 1 })
         : product
       )
     );
@@ -137,24 +201,18 @@ export default class App extends React.Component<{}, State> {
     this.setState({
       cart: cartCopy,
     });
-  };
+  }
 
-  removeItem = (id: number) => {
+  nextImage = (id: string) => {
     const cartCopy = [...this.state.cart].map(
-      (product: any) => (product.id === id
-        ? Object.assign(product, { itemCount: product.itemCount - 1 })
+      (product: Record<string, string>) => (product.id === id
+        ? Object.assign(product, { imageIndex: product.imageIndex + 1 })
         : product
       )
     );
 
-    if (this.state.cart.some((product: any) => product.itemCount === 0)) {
-      this.setState({
-        productCount: this.state.cart.length - 1,
-      })
-    }
-
     this.setState({
-      cart: cartCopy.filter((product: any) => product.itemCount > 0),
+      cart: cartCopy,
     });
   };
 
@@ -172,7 +230,10 @@ export default class App extends React.Component<{}, State> {
     const { currency, showCurrencies, isVisible } = this.state;
 
     return (
-      <div className="wrapper" onClick={this.close}>
+      <div
+        className="wrapper"
+        onClick={this.close}
+      >
         <div
           className={classNames({
             'overlay-visible': this.state.showMiniCart,
@@ -206,6 +267,7 @@ export default class App extends React.Component<{}, State> {
             setCurrency={this.setCurrency}
             closeCurrencyList={this.closeCurrencyList}
             productCount={this.state.productCount}
+            setCategoryName={this.setCategory}
             cart={this.state.cart}
             showMiniCart={this.state.showMiniCart}
             setShowMiniCart={this.setShowMiniCart}
@@ -221,54 +283,6 @@ export default class App extends React.Component<{}, State> {
             />
 
             <Route
-              path={`/all/:productId`}
-              render={(props) => (
-                <Product
-                  productId={props.match.params.productId}
-                  currency={currency}
-                  fillCart={this.fillCart}
-                />
-              )}
-            />
-
-            <Route
-              path='/all'
-              render={() => <All currency={currency} setId={this.setId} />}
-            />
-
-            <Route
-              path={`/clothes/:productId`}
-              render={(props) => (
-                <Product
-                  productId={props.match.params.productId}
-                  currency={currency}
-                  fillCart={this.fillCart}
-                />
-              )}
-            />
-
-            <Route
-              path='/clothes'
-              render={() => <Clothes currency={currency} setId={this.setId} />}
-            />
-
-            <Route
-              path={`/tech/:productId`}
-              render={(props) => (
-                <Product
-                  productId={props.match.params.productId}
-                  currency={currency}
-                  fillCart={this.fillCart}
-                />
-              )}
-            />
-
-            <Route
-              path='/tech'
-              render={() => <Tech currency={currency} setId={this.setId} />}
-            />
-
-            <Route
               path='/cart'
               render={() => (
                 <Cart
@@ -276,7 +290,33 @@ export default class App extends React.Component<{}, State> {
                   currency={this.state.currency}
                   addItem={this.addItem}
                   removeItem={this.removeItem}
+                  prevImage={this.prevImage}
+                  nextImage={this.nextImage}
                   clearCart={this.clearCart}
+                />
+              )}
+            />
+
+            <Route
+              path={`/:categoryName/:productId`}
+              render={(props) => (
+                <Product
+                  categoryName={props.match.params.categoryName}
+                  productId={props.match.params.productId}
+                  currency={currency}
+                  fillCart={this.fillCart}
+                />
+              )}
+            />
+
+            <Route
+              path={`/:categoryName`}
+              render={(props) => (
+                <Goods
+                  categoryName={props.match.params.categoryName}
+                  currency={currency}
+                  setId={this.setId}
+                  fillCart={this.fillCart}
                 />
               )}
             />
@@ -288,5 +328,5 @@ export default class App extends React.Component<{}, State> {
         </div>
       </div>
     )
-  };
-};
+  }
+}

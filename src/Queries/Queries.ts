@@ -1,91 +1,27 @@
 import { gql } from "@apollo/client";
 
-  export const getAll = gql`
+export const getCurrencies = gql`
   {
-    category(input: {title: "all"}) {
-      name
-      products {
-        id
-        name
-        brand
-        inStock
-        prices {
-          amount
-          currency {
-            label
-            symbol
-          }
-        }
-        gallery
-      }
+    currencies {
+      label
+      symbol
     }
   }
 `;
 
-  export const getClothes = gql`
-    query getClothes {
-      category(input: {title: "clothes"}) {
-        name
-        products {
-          id
-          name
-          brand
-          inStock
-          prices {
-            amount
-            currency {
-              label
-              symbol
-            }
-          }
-          gallery
-        }
-      }
+export const getCategoryNames = gql`
+  {
+    categories {
+      name
     }
-  `;
+  }
+`;
 
-  export const getTech = gql`
-    {
-      category(input: {title: "tech"}) {
-        name
-        products {
-          id
-          name
-          brand
-          inStock
-          prices {
-            amount
-            currency {
-              label
-              symbol
-            }
-          }
-          gallery
-        }
-      }
-    }
-  `;
-
-  export const getCurrencies = gql`
-    {
-      currencies {
-        label
-        symbol
-      }
-    }
-  `;
-
-  export const getCategoryNames = gql`
-    {
-      categories {
-        name
-      }
-    }
-  `;
-
-  export const getProduct = gql`
-    query getProduct($id: String!) {
-      product(id: $id) {
+export const getGoods = gql`
+  query getGoods($title: String!) {
+    category(input: {title: $title}) {
+      name
+      products {
         id
         name
         brand
@@ -111,4 +47,35 @@ import { gql } from "@apollo/client";
         gallery
       }
     }
-  `;
+  }
+`;
+
+export const getProduct = gql`
+  query getProduct($id: String!) {
+    product(id: $id) {
+      id
+      name
+      brand
+      inStock
+      attributes {
+        id
+        name
+        type
+        items {
+          id
+          value
+          displayValue
+        }
+      }
+      prices {
+        amount
+        currency {
+          label
+          symbol
+        }
+      }
+      description
+      gallery
+    }
+  }
+`;

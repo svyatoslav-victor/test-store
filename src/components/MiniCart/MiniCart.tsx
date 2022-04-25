@@ -12,19 +12,16 @@ type Props = {
   showMiniCart: boolean,
   productCount: number,
   cart: any[],
-  addItem: (props: number) => void,
-  removeItem: (props: number) => void,
+  addItem: (props: string) => void,
+  removeItem: (props: string) => void,
   clearCart: () => void,
 };
 
-export default class MiniCart extends React.Component<Props, {}> {
+export default class MiniCart extends React.Component<Props, Record<string, unknown>> {
   render() {
 
     const {
       currency,
-      showCurrencies,
-      setCurrency,
-      closeCurrencyList,
       setShowMiniCart,
       showMiniCart,
       productCount,
@@ -68,9 +65,9 @@ export default class MiniCart extends React.Component<Props, {}> {
                 <p className="item_info--brand">{item.brand}</p>
                 <p className="item_info--name">{item.name}</p>
                 <p className="item_info--price">
-                  {currency}{+(item.prices.filter((price: any) => (
+                  {currency}{+(item.prices.filter((price: Record<string, Record<string, string>>) => (
                     price.currency.symbol === currency))
-                    .map((price: any) => price.amount)
+                    .map((price: Record<string, string>) => price.amount)
                   )}
                 </p>
                 <div className="item_info--attributes">
@@ -83,12 +80,20 @@ export default class MiniCart extends React.Component<Props, {}> {
                       >
                       </div>
                     ) : (
-                      <div
-                        key={value}
-                        className="item_info--attributes-text"
-                      >
-                        {value}
-                      </div>
+                      value.includes('No')
+                        ? null
+                        : (
+                          <div
+                            key={value}
+                            className="item_info--attributes-text"
+                            style={{
+                              fontSize: value.includes('Yes') ? '9px' : '12px',
+                              textAlign: 'center',
+                            }}
+                          >
+                            {value.includes('Yes') ? value.slice(0, value.indexOf(':')) : value}
+                          </div>
+                        )
                     )
                   ))}
                 </div>
@@ -134,8 +139,8 @@ export default class MiniCart extends React.Component<Props, {}> {
             {currency}{
               cart.map(item => (
                 +item.prices
-                  .filter((price: any) => price.currency.symbol === currency)
-                  .map((price: any) => price.amount)
+                  .filter((price: Record<string, Record<string, string>>) => price.currency.symbol === currency)
+                  .map((price: Record<string, string>) => price.amount)
                 ) * item.itemCount).reduce((total, cost) => total + cost, 0).toFixed(2)
             }
           </span>
@@ -160,5 +165,5 @@ export default class MiniCart extends React.Component<Props, {}> {
         </div>
       </div>
     )
-  };
-};
+  }
+}

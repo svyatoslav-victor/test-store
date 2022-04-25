@@ -16,13 +16,14 @@ type Props = {
   setShowMiniCart: () => void,
   showMiniCart: boolean,
   productCount: number,
-  cart: any[],
-  addItem: (props: number) => void,
-  removeItem: (props: number) => void,
+  setCategoryName: (event: React.MouseEvent<HTMLElement>) => void,
+  cart: unknown[],
+  addItem: (props: string) => void,
+  removeItem: (props: string) => void,
   clearCart: () => void,
 };
 
-export default class Header extends React.Component<Props, {}> {
+export default class Header extends React.Component<Props, Record<string, unknown>> {
   render() {
 
     const {
@@ -44,16 +45,18 @@ export default class Header extends React.Component<Props, {}> {
         className="header"
         id="header"
       >
-        <Query<any> query={getCategoryNames}>
+        <Query<Record<string, any>> query={getCategoryNames}>
           {({ data }) => {
             return (
               <>
                 {data && (
                   <ul className="header__navigation">
-                    {data.categories.map((category: any) => (
+                    {data.categories.map((category: Record<string, string>) => (
                       <li
+                        id={category.name}
                         className="header__navigation_item"
                         key={category.name}
+                        onClick={this.props.setCategoryName}
                       >
                         <NavLink
                           className="header__navigation_item--link"
@@ -78,7 +81,7 @@ export default class Header extends React.Component<Props, {}> {
         </Link>
 
         <div className="header__control">
-            <Query<any> query={getCurrencies}>
+            <Query<Record<string, any>> query={getCurrencies}>
               {({ data }) => {
                 return (
                   <div className="header__control_currencies">
@@ -86,7 +89,15 @@ export default class Header extends React.Component<Props, {}> {
                       className="currency_picker"
                       onClick={closeCurrencyList}
                     >
-                      {currency} &#x2038;
+                      {currency}
+                      <span
+                        className="currency_picker_arrow"
+                        style={{
+                          transform: showCurrencies ? 'rotate(90deg)' : 'rotate(270deg)',
+                        }}
+                      >
+                        &#60;
+                      </span>
                     </div>
                     <ul
                       className="currency_list"
@@ -96,7 +107,7 @@ export default class Header extends React.Component<Props, {}> {
                       }}
                     >
                       {data && (
-                        data.currencies.map((currency: any) => (
+                        data.currencies.map((currency: Record<string, string>) => (
                           <li
                             className="currency_list--item"
                             key={currency.label}

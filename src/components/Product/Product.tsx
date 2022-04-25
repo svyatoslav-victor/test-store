@@ -7,17 +7,18 @@ import classNames from 'classnames';
 import './Product.scss';
 
 type Props = {
+  categoryName: string,
   productId: string,
   currency: string,
-  fillCart: (props: {}) => void,
+  fillCart: (props: Record<string, any>) => void,
 };
 
 type State = {
   selectedIndex: number,
-  selectedAttributes: {},
+  selectedAttributes: Record<string, string>,
   warning: boolean,
-  checkedAttributes: {},
-  productInfo: {},
+  checkedAttributes: Record<string, string>,
+  productInfo: Record<string, any>,
   attributeCount: number,
 };
 
@@ -31,27 +32,29 @@ export default class Product extends React.Component<Props, State> {
     attributeCount: 0,
   };
   
-  newAttributeSet: any[] = [];
+  newAttributeSet: Record<string, string>[] = [];
 
   setAttributes = (event: React.MouseEvent<HTMLElement>) => {
-    let name = event.currentTarget.parentElement!.id;
-    let value = event.currentTarget.id;
-
-    this.newAttributeSet.push({ [name]: value });
-
-    let checkedSet = this.newAttributeSet.reduce((acc, obj) => Object.assign(acc, obj), {});
-    this.setState({
-      checkedAttributes: checkedSet,
-    });
-
-    if (Object.keys(checkedSet).length > 0 && Object.keys(checkedSet).length !== this.state.attributeCount) {
+    if (event.currentTarget.parentElement) {
+      const name = event.currentTarget.parentElement.id;
+      const value = event.currentTarget.id;
+  
+      this.newAttributeSet.push({ [name]: value });
+  
+      const checkedSet = this.newAttributeSet.reduce((acc, obj) => Object.assign(acc, obj), {});
       this.setState({
-        warning: true,
+        checkedAttributes: checkedSet,
       });
-    } else {
-      this.setState({
-        warning: false,
-      });
+  
+      if (Object.keys(checkedSet).length > 0 && Object.keys(checkedSet).length !== this.state.attributeCount) {
+        this.setState({
+          warning: true,
+        });
+      } else {
+        this.setState({
+          warning: false,
+        });
+      }
     }
   };
 
@@ -80,12 +83,15 @@ export default class Product extends React.Component<Props, State> {
     }).then(result => {
       this.setState({
         productInfo: {
-          id: Math.random(),
+          id: Object.values(attributeSet).length === 0
+            ? Math.random().toString()
+            : Object.values(attributeSet).sort().join(''),
           brand: result.data.product.brand,
           name: result.data.product.name,
-          attributes: Object.values(this.state.selectedAttributes),
+          attributes: Object.values(this.state.selectedAttributes).sort(),
           prices: result.data.product.prices,
           gallery: result.data.product.gallery,
+          imageIndex: 0,
           currency: this.props.currency,
           itemCount: 1,
         },
@@ -105,29 +111,25 @@ export default class Product extends React.Component<Props, State> {
         warning: result.data.product.attributes.length !== Object.keys(this.state.checkedAttributes).length,
       })
     ));
-  };
+  }
 
   render() {
     const {
       productId,
       currency,
-      fillCart,
     } = this.props;
 
     const {
       selectedIndex,
-      selectedAttributes,
       warning,
       checkedAttributes,
-      productInfo,
-      attributeCount,
     } = this.state;
 
     const parser = new DOMParser();
 
     return (
       <div className="product_info">
-        <Query<any> query={getProduct} variables={{ id: productId }}>
+        <Query<Record<string, any>> query={getProduct} variables={{ id: productId }}>
           {({ data }) => {
             return (
               <div className="product">
@@ -174,7 +176,7 @@ export default class Product extends React.Component<Props, State> {
                       </h2>
 
                       <div className="product__info_attributes">
-                        {data.product.attributes.map((attribute: any) => (
+                        {data.product.attributes.map((attribute: Record<string, any>) => (
                           attribute.name === 'Color' ? (
                           <div
                             className="attribute"
@@ -189,7 +191,7 @@ export default class Product extends React.Component<Props, State> {
                               id={attribute.name}
                               className="attribute__list"
                             >
-                              {attribute.items.map((item: any) => (
+                              {attribute.items.map((item: Record<string, string>) => (
                                 <div
                                   id={item.value}
                                   className={classNames('attribute__list--item', {
@@ -219,17 +221,28 @@ export default class Product extends React.Component<Props, State> {
                               id={attribute.name}
                               className="attribute__list"
                             >
-                              {attribute.items.map((item: any) => (
-                                <div
-                                  id={item.value}
-                                  className={classNames('attribute__list--text-item', {
-                                    'checked': Object.values(checkedAttributes).includes(item.value),
-                                  })}
-                                  key={item.id}
-                                  onClick={this.setAttributes}
-                                >
-                                  {item.value}
-                                </div>
+                              {attribute.items.map((item: Record<string, string>) => (
+                                item.value === 'Yes' || item.value === 'No'
+                                  ? (<div
+                                      id={`${attribute.name}:${item.value}`}
+                                      className={classNames('attribute__list--text-item', {
+                                        'checked': Object.values(checkedAttributes).includes(`${attribute.name}:${item.value}`),
+                                      })}
+                                      key={item.id}
+                                      onClick={this.setAttributes}
+                                    >
+                                      {item.value}
+                                    </div>)
+                                  : (<div
+                                      id={item.value}
+                                      className={classNames('attribute__list--text-item', {
+                                        'checked': Object.values(checkedAttributes).includes(item.value),
+                                      })}
+                                      key={item.id}
+                                      onClick={this.setAttributes}
+                                    >
+                                      {item.value}
+                                    </div>)
                               ))}
                             </div>
                           </div>
@@ -239,8 +252,8 @@ export default class Product extends React.Component<Props, State> {
 
                       <div className="product__info_price">
                         <p className="price">PRICE:</p>
-                        {data.product.prices.filter((price: any) => price.currency.symbol === currency)
-                            .map((item: any) => (
+                        {data.product.prices.filter((price: Record<string, Record<string, string>>) => price.currency.symbol === currency)
+                            .map((item: Record<string, any>) => (
                               <p
                                 className="price--amount"
                                 key={item.currency.label}
@@ -295,5 +308,5 @@ export default class Product extends React.Component<Props, State> {
         </Query>
       </div>
     )
-  };
-};
+  }
+}

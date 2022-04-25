@@ -4,32 +4,15 @@ import './Cart.scss';
 
 type Props = {
   currency: string,
-  cart: any[],
-  addItem: (props: number) => void,
-  removeItem: (props: number) => void,
+  cart: Record<string, any>[],
+  addItem: (props: string) => void,
+  removeItem: (props: string) => void,
+  prevImage: (props: string) => void,
+  nextImage: (props: string) => void,
   clearCart: () => void,
 };
 
-type State = {
-  index: number,
-};
-
-export default class Cart extends React.Component<Props, State> {
-  state = {
-    index: 0,
-  };
-
-  prevImage = () => {
-    this.setState(prevState => ({
-      index: prevState.index - 1,
-    }));
-  };
-
-  nextImage = () => {
-    this.setState(prevState => ({
-      index: prevState.index + 1,
-    }));
-  };
+export default class Cart extends React.Component<Props, Record<string, unknown>> {
 
   render() {
     const {
@@ -39,8 +22,6 @@ export default class Cart extends React.Component<Props, State> {
       removeItem,
       clearCart,
     } = this.props;
-
-    const { index } = this.state;
 
     return (
       <div className="cart">
@@ -75,8 +56,8 @@ export default class Cart extends React.Component<Props, State> {
                 <p className="product__data_price">
                   {currency}
                   {+product.prices
-                    .filter((price: any) => price.currency.symbol === currency)
-                    .map((price: any) => price.amount)}
+                    .filter((price: Record<string, Record<string, string>>) => price.currency.symbol === currency)
+                    .map((price: Record<string, string>) => price.amount)}
                 </p>
 
                 <div className="product__data_attributes">
@@ -89,12 +70,20 @@ export default class Cart extends React.Component<Props, State> {
                       >
                       </div>
                     ) : (
-                      <div
-                        key={value}
-                        className="product__data_attributes--text"
-                      >
-                        {value}
-                      </div>
+                      value.includes('No')
+                        ? null
+                        : (
+                          <div
+                            key={value}
+                            className="product__data_attributes--text"
+                            style={{
+                              fontSize: value.includes('Yes') ? '12px' : '18px',
+                              textAlign: 'center',
+                            }}
+                          >
+                            {value.includes('Yes') ? value.slice(0, value.indexOf(':')) : value}
+                          </div>
+                        )
                     )
                   ))}
                 </div>
@@ -130,8 +119,8 @@ export default class Cart extends React.Component<Props, State> {
                 <button
                   className="button button--back"
                   hidden={product.gallery.length === 1}
-                  disabled={index === 0}
-                  onClick={this.prevImage}
+                  disabled={product.imageIndex === 0}
+                  onClick={() => this.props.prevImage(product.id)}
                 >
                   &#60;
                 </button>
@@ -142,19 +131,17 @@ export default class Cart extends React.Component<Props, State> {
                     src={
                       product.gallery.length === 1
                         ? product.gallery[0]
-                        : product.gallery[index]
+                        : product.gallery[product.imageIndex]
                     }
                     alt="/"
-                    width='150px'
-                    height='150px'
                   />
                 </div>
 
                 <button
                   className="button button--forward"
                   hidden={product.gallery.length === 1}
-                  disabled={index === product.gallery.length -  1}
-                  onClick={this.nextImage}
+                  disabled={product.imageIndex === product.gallery.length -  1}
+                  onClick={() => this.props.nextImage(product.id)}
                 >
                   &#62;
                 </button>
@@ -171,12 +158,12 @@ export default class Cart extends React.Component<Props, State> {
           {currency}
           {cart.map(item => (
             +item.prices
-              .filter((p: any) => p.currency.symbol === currency)
-              .map((i: any) => i.amount)
+              .filter((p: Record<string, Record<string, string>>) => p.currency.symbol === currency)
+              .map((i: Record<string, string>) => i.amount)
             ) * item.itemCount).reduce((total, amount) => total + amount, 0).toFixed(2)}
           </p>
         </div>
       </div>
     )
-  };
-};
+  }
+}
