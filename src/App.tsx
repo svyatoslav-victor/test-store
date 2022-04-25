@@ -17,7 +17,7 @@ type State = {
   id: string,
   isVisible: boolean,
   productCount: number,
-  cart: Record<string, unknown>[],
+  cart: unknown[],
 };
 
 export default class App extends React.Component<Record<string, unknown>, State> {
