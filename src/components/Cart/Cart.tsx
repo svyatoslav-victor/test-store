@@ -1,10 +1,14 @@
 import React from 'react';
+import {
+  Price,
+  ProductInfo
+} from '../../types';
 
 import './Cart.scss';
 
 type Props = {
   currency: string,
-  cart: Record<string, any>[],
+  cart: ProductInfo[],
   addItem: (props: string) => void,
   removeItem: (props: string) => void,
   prevImage: (props: string) => void,
@@ -56,8 +60,8 @@ export default class Cart extends React.Component<Props, Record<string, unknown>
                 <p className="product__data_price">
                   {currency}
                   {+product.prices
-                    .filter((price: Record<string, Record<string, string>>) => price.currency.symbol === currency)
-                    .map((price: Record<string, string>) => price.amount)}
+                    .filter((price: Price) => price.currency.symbol === currency)
+                    .map((price: Price) => price.amount)}
                 </p>
 
                 <div className="product__data_attributes">
@@ -158,8 +162,8 @@ export default class Cart extends React.Component<Props, Record<string, unknown>
           {currency}
           {cart.map(item => (
             +item.prices
-              .filter((p: Record<string, Record<string, string>>) => p.currency.symbol === currency)
-              .map((i: Record<string, string>) => i.amount)
+              .filter((price: Price) => price.currency.symbol === currency)
+              .map((price: Price) => price.amount)
             ) * item.itemCount).reduce((total, amount) => total + amount, 0).toFixed(2)}
           </p>
         </div>

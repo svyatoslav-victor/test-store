@@ -3,7 +3,13 @@ import { Link, NavLink } from 'react-router-dom';
 import { Query } from '@apollo/client/react/components';
 import { getCurrencies, getCategoryNames } from '../../Queries/Queries';
 import cartIcon from '../../../src/cart.png';
-
+import {
+  Category,
+  Currency,
+  ProductInfo,
+  CurrencyQuery,
+  CategoryNamesQuery
+} from '../../types';
 import MiniCart from '../MiniCart/MiniCart';
 
 import './Header.scss';
@@ -17,7 +23,7 @@ type Props = {
   showMiniCart: boolean,
   productCount: number,
   setCategoryName: (event: React.MouseEvent<HTMLElement>) => void,
-  cart: unknown[],
+  cart: ProductInfo[],
   addItem: (props: string) => void,
   removeItem: (props: string) => void,
   clearCart: () => void,
@@ -45,13 +51,13 @@ export default class Header extends React.Component<Props, Record<string, unknow
         className="header"
         id="header"
       >
-        <Query<Record<string, any>> query={getCategoryNames}>
+        <Query<CategoryNamesQuery> query={getCategoryNames}>
           {({ data }) => {
             return (
               <>
                 {data && (
                   <ul className="header__navigation">
-                    {data.categories.map((category: Record<string, string>) => (
+                    {data.categories.map((category: Category) => (
                       <li
                         id={category.name}
                         className="header__navigation_item"
@@ -81,7 +87,7 @@ export default class Header extends React.Component<Props, Record<string, unknow
         </Link>
 
         <div className="header__control">
-            <Query<Record<string, any>> query={getCurrencies}>
+            <Query<CurrencyQuery> query={getCurrencies}>
               {({ data }) => {
                 return (
                   <div className="header__control_currencies">
@@ -107,7 +113,7 @@ export default class Header extends React.Component<Props, Record<string, unknow
                       }}
                     >
                       {data && (
-                        data.currencies.map((currency: Record<string, string>) => (
+                        data.currencies.map((currency: Currency) => (
                           <li
                             className="currency_list--item"
                             key={currency.label}

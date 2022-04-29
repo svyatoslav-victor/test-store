@@ -3,6 +3,13 @@ import { Link } from 'react-router-dom';
 import { Query } from '@apollo/client/react/components';
 import { client } from '../../index';
 import { getGoods } from '../../Queries/Queries';
+import {
+  Price,
+  AttributeSet,
+  ProductType,
+  ProductInfo,
+  GoodsQuery
+} from '../../types';
 import classNames from 'classnames';
 
 import './Goods.scss';
@@ -11,16 +18,26 @@ type Props = {
   categoryName: string,
   currency: string,
   setId: (event: React.MouseEvent<HTMLElement>) => void,
-  fillCart: (props: Record<string, unknown>) => void,
+  fillCart: (props: ProductInfo) => void,
 };
 
 type State = {
-  productInfo: Record<string, unknown>,
+  productInfo: ProductInfo,
 };
 
 export default class All extends React.Component<Props, State> {
   state = {
-    productInfo: {},
+    productInfo: {
+      id: '',
+      brand: '',
+      name: '',
+      attributes: [],
+      prices: [],
+      gallery: [],
+      imageIndex: -1,
+      currency: '',
+      itemCount: -1,
+    },
   };
 
   componentDidMount() {
@@ -35,16 +52,16 @@ export default class All extends React.Component<Props, State> {
       query: getGoods,
       variables: { title: this.props.categoryName }
     }).then(result => {
-      result.data.category.products.map((product: Record<string, any>) => {
+      result.data.category.products.map((product: ProductType) => {
         if (product.id === id) {
           this.setState({
             productInfo: {
               id: product.attributes.length === 0
                 ? Math.random().toString()
-                : product.attributes.map((attribute: Record<string, any>) => attribute.items[0].value).sort().join(''),
+                : product.attributes.map((attribute: AttributeSet) => attribute.items[0].value).sort().join(''),
               brand: product.brand,
               name: product.name,
-              attributes: product.attributes.map((attribute: Record<string, any>) => attribute.items[0].value).sort(),
+              attributes: product.attributes.map((attribute: AttributeSet) => attribute.items[0].value).sort(),
               prices: product.prices,
               gallery: product.gallery,
               imageIndex: 0,
@@ -63,7 +80,7 @@ export default class All extends React.Component<Props, State> {
     const { categoryName, currency, setId } = this.props;
 
     return (
-      <Query<Record<string, any>> query={getGoods} variables={{ title: categoryName }}>
+      <Query<GoodsQuery> query={getGoods} variables={{ title: categoryName }}>
         {({ data }) => {
           return (
             <div className="main">
@@ -73,7 +90,7 @@ export default class All extends React.Component<Props, State> {
                     {data.category.name[0].toUpperCase() + data.category.name.slice(1)}
                   </h2>
                   <div className="main__content">
-                    {data.category.products.map((product: Record<string, any>) => (
+                    {data.category.products.map((product: ProductType) => (
                       <Link
                         to={`/${categoryName}/${product.id}`}
                         className="item"
@@ -81,6 +98,7 @@ export default class All extends React.Component<Props, State> {
                       >
                         <button
                           className="item__addDefault"
+                          hidden={!product.inStock}
                           onClick={(event) => {
                             event.preventDefault();
                             this.addDefault(product.id);
@@ -117,13 +135,13 @@ export default class All extends React.Component<Props, State> {
                         <h3
                           className="item__price"
                         >
-                          {product.prices.filter((price: Record<string, Record<string, string>>) => price.currency.symbol === currency)
-                            .map((item: Record<string, any>) => (
+                          {product.prices.filter((price: Price) => price.currency.symbol === currency)
+                            .map((price: Price) => (
                               <p
                                 className="item__price--amount"
-                                key={item.currency.label}
+                                key={price.currency.label}
                               >
-                                {item.currency.symbol}{item.amount.toFixed(2)}
+                                {price.currency.symbol}{price.amount.toFixed(2)}
                               </p>
                             )
                             )}

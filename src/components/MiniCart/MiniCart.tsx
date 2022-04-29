@@ -1,5 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import {
+  Price,
+  ProductInfo
+} from '../../types';
 
 import './MiniCart.scss';
 
@@ -11,7 +15,7 @@ type Props = {
   setShowMiniCart: () => void,
   showMiniCart: boolean,
   productCount: number,
-  cart: any[],
+  cart: ProductInfo[],
   addItem: (props: string) => void,
   removeItem: (props: string) => void,
   clearCart: () => void,
@@ -65,9 +69,9 @@ export default class MiniCart extends React.Component<Props, Record<string, unkn
                 <p className="item_info--brand">{item.brand}</p>
                 <p className="item_info--name">{item.name}</p>
                 <p className="item_info--price">
-                  {currency}{+(item.prices.filter((price: Record<string, Record<string, string>>) => (
+                  {currency}{+(item.prices.filter((price: Price) => (
                     price.currency.symbol === currency))
-                    .map((price: Record<string, string>) => price.amount)
+                    .map((price: Price) => price.amount)
                   )}
                 </p>
                 <div className="item_info--attributes">
@@ -139,8 +143,8 @@ export default class MiniCart extends React.Component<Props, Record<string, unkn
             {currency}{
               cart.map(item => (
                 +item.prices
-                  .filter((price: Record<string, Record<string, string>>) => price.currency.symbol === currency)
-                  .map((price: Record<string, string>) => price.amount)
+                  .filter((price: Price) => price.currency.symbol === currency)
+                  .map((price: Price) => price.amount)
                 ) * item.itemCount).reduce((total, cost) => total + cost, 0).toFixed(2)
             }
           </span>

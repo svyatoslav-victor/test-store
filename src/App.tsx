@@ -5,6 +5,7 @@ import Header from './components/Header/Header';
 import Goods from './components/Goods/Goods';
 import Product from './components/Product/Product';
 import Cart from './components/Cart/Cart';
+import { ProductInfo } from './types';
 import classNames from 'classnames';
 
 import './App.scss';
@@ -17,7 +18,7 @@ type State = {
   id: string,
   isVisible: boolean,
   productCount: number,
-  cart: unknown[],
+  cart: ProductInfo[],
 };
 
 export default class App extends React.Component<Record<string, unknown>, State> {
@@ -121,7 +122,7 @@ export default class App extends React.Component<Record<string, unknown>, State>
     }
   };
 
-  fillCart = (data: Record<string, unknown>) => {
+  fillCart = (data: ProductInfo) => {
     if (this.state.cart.length === 0) {
       this.setState({
         cart: [...this.state.cart, data],
@@ -131,8 +132,8 @@ export default class App extends React.Component<Record<string, unknown>, State>
         productCount: 1,
       });
     } else {
-      this.state.cart.forEach((product: Record<string, string>) => {
-        if (this.state.cart.find((product: Record<string, string>) => product.id === data.id)) {
+      this.state.cart.forEach((product: ProductInfo) => {
+        if (this.state.cart.find((product: ProductInfo) => product.id === data.id)) {
           if (product.id === data.id) {
             Object.assign(product, { itemCount: product.itemCount + 1 });
             this.setState({
@@ -158,7 +159,7 @@ export default class App extends React.Component<Record<string, unknown>, State>
 
   addItem = (id: string) => {
     const cartCopy = [...this.state.cart].map(
-      (product: Record<string, string>) => (product.id === id
+      (product: ProductInfo) => (product.id === id
         ? Object.assign(product, { itemCount: product.itemCount + 1 })
         : product
       )
@@ -175,7 +176,7 @@ export default class App extends React.Component<Record<string, unknown>, State>
 
   removeItem = (id: string) => {
     const cartCopy = [...this.state.cart].map(
-      (product: Record<string, string>) => (product.id === id
+      (product: ProductInfo) => (product.id === id
         ? Object.assign(product, { itemCount: +product.itemCount - 1 })
         : product
       )
@@ -186,13 +187,13 @@ export default class App extends React.Component<Record<string, unknown>, State>
     }));
 
     this.setState({
-      cart: cartCopy.filter((product: Record<string, number | string>) => product.itemCount > 0),
+      cart: cartCopy.filter((product: ProductInfo) => product.itemCount > 0),
     });
   };
 
   prevImage = (id: string) => {
     const cartCopy = [...this.state.cart].map(
-      (product: Record<string, string>) => (product.id === id
+      (product: ProductInfo) => (product.id === id
         ? Object.assign(product, { imageIndex: +product.imageIndex - 1 })
         : product
       )
@@ -205,7 +206,7 @@ export default class App extends React.Component<Record<string, unknown>, State>
 
   nextImage = (id: string) => {
     const cartCopy = [...this.state.cart].map(
-      (product: Record<string, string>) => (product.id === id
+      (product: ProductInfo) => (product.id === id
         ? Object.assign(product, { imageIndex: product.imageIndex + 1 })
         : product
       )
