@@ -12,7 +12,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 export const client = new ApolloClient({
-  uri: 'http://localhost:4000/',
+  uri: 'https://test-store-graphql.herokuapp.com/', // http://localhost:4000/ - default
   cache: new InMemoryCache({
     typePolicies: {
       Product: {
